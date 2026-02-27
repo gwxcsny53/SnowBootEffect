@@ -1,14 +1,17 @@
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class FootprintMaker : MonoBehaviour
 {
-    public GameObject footprintPrefab;
     public float footprintLifetime = 10f;
     public float stepInterval = 0.5f;
     public float rayDistence = 1.5f;
 
     public LayerMask groundLayer;
+
+    /** 脚印管理器 具有对象池*/
+    private FootprintManger footprintManger;
 
     private float stepTimer = 0f;
 
@@ -21,6 +24,8 @@ public class FootprintMaker : MonoBehaviour
     void Start()
     {
         characterController = GetComponent<SelfCharacterController>();
+
+        footprintManger = GetComponent<FootprintManger>();
     }
 
     // Update is called once per frame
@@ -52,9 +57,10 @@ public class FootprintMaker : MonoBehaviour
             // 在地面位置生成足印，朝向角色前进方向
             // 修正后的旋转逻辑：让物体的 Z 轴对齐地面法线的反方向（向下），Y 轴对齐角色前方
             Quaternion footprintRotation = Quaternion.LookRotation(-hit.normal, transform.forward);
-
-            GameObject footprint = Instantiate(footprintPrefab, hit.point + hit.normal * 0.01f, footprintRotation);
-            Destroy(footprint, footprintLifetime);
+            // Vector3 footprintPositon = new Vector3(hit.point + hit.normal * 0.01f);
+            footprintManger.SpawnFootprint(hit.point + hit.normal * 0.01f, footprintRotation);
+            // GameObject footprint = Instantiate(footprintPrefab, hit.point + hit.normal * 0.01f, footprintRotation);
+            // Destroy(footprint, footprintLifetime);
         }
     }
 }
