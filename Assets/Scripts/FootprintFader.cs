@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -12,11 +13,24 @@ public class FootprintFader : MonoBehaviour
     private Color originalColor;
     private static readonly int BaseColorID = Shader.PropertyToID("_BaseColor");
 
+    /** 缓存贴图属性的ID  在URP中主贴图叫 _BaseMap */
+    private static readonly int BaseMapID = Shader.PropertyToID("_BaseMap");
+
     private IObjectPool<FootprintFader> objectPool;
 
     public void SetPool(IObjectPool<FootprintFader> pool)
     {
         objectPool = pool;
+    }
+
+    public void SetPootprintType(Boolean isLeftFoot)
+    {
+        if (rend != null)
+        {
+            float offsetX = isLeftFoot ? 0f : 0.5f;
+            // 使用SetTextureOffset 专门修改贴图的偏移值
+            rend.material.SetTextureOffset(BaseMapID, new Vector2(offsetX, 0f));
+        }
     }
 
     void Awake()
@@ -27,6 +41,8 @@ public class FootprintFader : MonoBehaviour
             originalColor = rend.material.GetColor(BaseColorID);
 
         }
+
+
     }
 
     void OnEnable()

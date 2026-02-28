@@ -9,6 +9,8 @@ public class FootprintMaker : MonoBehaviour
     public float rayDistence = 1.5f;
 
     public LayerMask groundLayer;
+    [Tooltip("脚印中心到左右脚的偏移距离")]
+    public float footSpacing = 0.2f;
 
     /** 脚印管理器 具有对象池*/
     private FootprintManger footprintManger;
@@ -16,6 +18,8 @@ public class FootprintMaker : MonoBehaviour
     private float stepTimer = 0f;
 
     private SelfCharacterController characterController;
+
+    private bool isNextFootLeft = true;
 
     /// <summary>
     /// Start is called on the frame when a script is enabled just before
@@ -49,8 +53,9 @@ public class FootprintMaker : MonoBehaviour
 
     private void TryPlaceFootprint()
     {
+        Vector3 footprintOffset = isNextFootLeft ? -transform.right : transform.right;
         // 从角色脚下向下发射射线检测地面
-        Vector3 rayOrigin = transform.position + Vector3.up * 0.1f;
+        Vector3 rayOrigin = transform.position + Vector3.up * 0.1f + footprintOffset * this.footSpacing;
         Ray ray = new Ray(rayOrigin, Vector3.down);
         if (Physics.Raycast(ray, out RaycastHit hit, rayDistence, groundLayer))
         {
@@ -61,6 +66,8 @@ public class FootprintMaker : MonoBehaviour
             footprintManger.SpawnFootprint(hit.point + hit.normal * 0.01f, footprintRotation);
             // GameObject footprint = Instantiate(footprintPrefab, hit.point + hit.normal * 0.01f, footprintRotation);
             // Destroy(footprint, footprintLifetime);
+
+            isNextFootLeft = !isNextFootLeft;
         }
     }
 }

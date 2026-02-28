@@ -7,6 +7,7 @@ public class FootprintManger : MonoBehaviour
     public FootprintFader footprintPrefab;
 
     private ObjectPool<FootprintFader> footprintPool;
+    private bool isNextFootLeft = true;
     void Start()
     {
         footprintPool = new ObjectPool<FootprintFader>(
@@ -27,6 +28,9 @@ public class FootprintManger : MonoBehaviour
         // footprint.gameObject.transform
         footprint.transform.position = position;
         footprint.transform.rotation = rotation;
+
+        footprint.SetPootprintType(isNextFootLeft);
+        isNextFootLeft = !isNextFootLeft;
     }
 
     private FootprintFader createFootprint()
