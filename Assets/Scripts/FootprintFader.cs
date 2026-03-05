@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.Rendering.Universal;
 
 public class FootprintFader : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class FootprintFader : MonoBehaviour
     [Tooltip("脚印可见的持续时间")]
     public float fadeDuration = 3f;
 
-    private Renderer rend;
+    private DecalProjector decalProjector;
     private Color originalColor;
     private static readonly int BaseColorID = Shader.PropertyToID("_BaseColor");
 
@@ -25,21 +26,20 @@ public class FootprintFader : MonoBehaviour
 
     public void SetPootprintType(Boolean isLeftFoot)
     {
-        if (rend != null)
+        if (decalProjector != null)
         {
             float offsetX = isLeftFoot ? 0f : 0.5f;
             // 使用SetTextureOffset 专门修改贴图的偏移值
-            rend.material.SetTextureOffset(BaseMapID, new Vector2(offsetX, 0f));
+            decalProjector.material.SetTextureOffset(BaseMapID, new Vector2(offsetX, 0f));
         }
     }
 
     void Awake()
     {
-        rend = GetComponent<Renderer>();
-        if (rend != null)
+        decalProjector = GetComponent<DecalProjector>();
+        if (decalProjector != null)
         {
-            originalColor = rend.material.GetColor(BaseColorID);
-
+            originalColor = decalProjector.material.GetColor(BaseColorID);
         }
 
 
@@ -47,10 +47,10 @@ public class FootprintFader : MonoBehaviour
 
     void OnEnable()
     {
-        if (rend != null)
+        if (decalProjector != null)
         {
             Color resetColor = originalColor;
-            rend.material.SetColor(BaseColorID, resetColor);
+            decalProjector.material.SetColor(BaseColorID, resetColor);
             StartCoroutine(FadeOutCoroutine());
         }
     }
@@ -68,7 +68,7 @@ public class FootprintFader : MonoBehaviour
             Color newColor = new Color(originalColor.r, originalColor.g, originalColor.b, currentAlpha);
             // rend.material.color = newColor;
 
-            rend.material.SetColor(BaseColorID, newColor);
+            decalProjector.material.SetColor(BaseColorID, newColor);
 
 
             // 挂起携程 等待下一帧继续执行

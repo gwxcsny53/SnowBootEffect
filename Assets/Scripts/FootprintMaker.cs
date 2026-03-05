@@ -6,12 +6,11 @@ public class FootprintMaker : MonoBehaviour
 {
     public float footprintLifetime = 10f;
     public float stepInterval = 0.5f;
-    public float rayDistence = 1.5f;
+    public float rayDistence = 0.4f;
 
     public LayerMask groundLayer;
     [Tooltip("脚印中心到左右脚的偏移距离")]
     public float footSpacing = 0.2f;
-
     /** 脚印管理器 具有对象池*/
     private FootprintManger footprintManger;
 
