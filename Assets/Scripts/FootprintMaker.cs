@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.UIElements;
-
 public class FootprintMaker : MonoBehaviour
 {
     public float footprintLifetime = 10f;
@@ -11,6 +10,19 @@ public class FootprintMaker : MonoBehaviour
     public LayerMask groundLayer;
     [Tooltip("脚印中心到左右脚的偏移距离")]
     public float footSpacing = 0.2f;
+
+    [Header("脚步音效设置")]
+    [Tooltip("audio source 组件")]
+    public AudioSource footstepAudioSource;
+
+    [Tooltip("声音文件")]
+    public AudioClip[] footstepClips;
+    [Tooltip("音高的随机下限")]
+    [Range(0.8f, 1.2f)] public float minPitch = 0.9f;
+
+    [Tooltip("音高的随机下限")]
+    [Range(0.8f, 1.2f)] public float maxPitch = 1.1f;
+
     /** 脚印管理器 具有对象池*/
     private FootprintManger footprintManger;
 
@@ -67,6 +79,24 @@ public class FootprintMaker : MonoBehaviour
             // Destroy(footprint, footprintLifetime);
 
             isNextFootLeft = !isNextFootLeft;
+
+            PlayFootstepSound();
         }
+    }
+
+    private void PlayFootstepSound()
+    {
+        if (footstepAudioSource == null || footstepClips == null || footstepClips.Length == 0)
+        {
+            return;
+        }
+
+        AudioClip clipToPlay = footstepClips[UnityEngine.Random.Range(0, footstepClips.Length)];
+
+        footstepAudioSource.pitch = UnityEngine.Random.Range(minPitch, maxPitch);
+
+        float randomVolume = UnityEngine.Random.Range(0.8f, 1.0f);
+
+        footstepAudioSource.PlayOneShot(clipToPlay, randomVolume);
     }
 }

@@ -39,6 +39,8 @@ public class FootprintFader : MonoBehaviour
         decalProjector = GetComponent<DecalProjector>();
         if (decalProjector != null)
         {
+            // 【核心修复】：手动克隆一份独立的材质，切断与其他脚印的联系！
+            decalProjector.material = new Material(decalProjector.material);
             originalColor = decalProjector.material.GetColor(BaseColorID);
         }
 
@@ -53,6 +55,11 @@ public class FootprintFader : MonoBehaviour
             decalProjector.material.SetColor(BaseColorID, resetColor);
             StartCoroutine(FadeOutCoroutine());
         }
+    }
+
+    void OnDisable()
+    {
+
     }
 
 
@@ -78,6 +85,16 @@ public class FootprintFader : MonoBehaviour
         if (objectPool != null)
         {
             objectPool.Release(this);
+        }
+    }
+
+    // 当这个对象被彻底销毁时（比如切换场景）
+    void OnDestroy()
+    {
+        // 养成好习惯：手动清理掉代码 new 出来的材质，防止内存泄漏
+        if (decalProjector != null && decalProjector.material != null)
+        {
+            Destroy(decalProjector.material);
         }
     }
 
