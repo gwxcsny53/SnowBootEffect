@@ -24,17 +24,9 @@ public class SnowStamper : MonoBehaviour
         RenderTexture.active = snowRT;
         GL.Clear(false, true, Color.black);
         RenderTexture.active = null;
-
-        // 加载unity 内置 UI Shader ，他自带完美的透明混合模式
-        blendMaterial = new Material(Shader.Find("UI/Default"));
+        // 、、、
+        blendMaterial = new Material(Shader.Find("Custom/SnowStamp"));
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        // StampFootprint(transform.position);
-    }
-
 
     public void StampFootprint(Vector3 worldPos)
     {
@@ -59,8 +51,10 @@ public class SnowStamper : MonoBehaviour
 
         // 计算笔刷图片绘制的矩形范围
         Rect drawRect = new Rect(
-         (snowRT.width - pixelX) - pixelSize * 0.5f,
-            pixelY - pixelSize * 0.5f,
+            // (snowRT.width - pixelX) - pixelSize * 0.5f,
+            // pixelY - pixelSize * 0.5f,
+            pixelX - pixelSize * 0.5f,
+            snowRT.height - pixelY - pixelSize * 0.5f,
             pixelSize,
             pixelSize
             );
