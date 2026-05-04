@@ -76,7 +76,6 @@ public class FootprintMaker : MonoBehaviour
         {
 
 
-            Debug.Log("bbbbb");
             /** 使用decal的逻辑
            
                 // 在地面位置生成足印，朝向角色前进方向
@@ -93,7 +92,6 @@ public class FootprintMaker : MonoBehaviour
             // 使用 graph 
             if (snowStamper)
             {
-                Debug.Log("sss");
                 snowStamper.StampFootprint(transform.position);
             }
             PlayFootstepSound();

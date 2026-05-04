@@ -36,33 +36,21 @@ public class SnowStamper : MonoBehaviour
 
         if (uvX < 0.0f || uvX > 1.0f || uvZ < 0.0f || uvZ > 1.0f) return;
 
-        // 算出再 RT 上的位置
-        float pixelX = uvX * snowRT.width;
-        float pixelY = uvZ * snowRT.height;
 
-        // 算出笔刷像素大小
-        float pixelSize = (brushSize / planeSize) * snowRT.width;
+        RenderTexture tempRT = RenderTexture.GetTemporary(snowRT.width, snowRT.height, 0, snowRT.graphicsFormat);
+        Graphics.Blit(snowRT, tempRT);
 
-        RenderTexture.active = snowRT;
-        GL.PushMatrix();
+        blendMaterial.SetTexture("_PrevTex", tempRT);
+        blendMaterial.SetTexture("_MainTex", brushTexture);
+        blendMaterial.SetVector("_StampCenter", new Vector4(uvX, 1.0f - uvZ, 0, 0));
+        blendMaterial.SetFloat("_StampSize", brushSize / planeSize);
+        blendMaterial.SetFloat("_Strength", 1.0f);
 
-        // untiy GL  Y 轴是从下往上画的，需要将Y反转
-        GL.LoadPixelMatrix(0, snowRT.width, snowRT.height, 0);
+        Graphics.Blit(tempRT, snowRT, blendMaterial);
 
-        // 计算笔刷图片绘制的矩形范围
-        Rect drawRect = new Rect(
-            // (snowRT.width - pixelX) - pixelSize * 0.5f,
-            // pixelY - pixelSize * 0.5f,
-            pixelX - pixelSize * 0.5f,
-            snowRT.height - pixelY - pixelSize * 0.5f,
-            pixelSize,
-            pixelSize
-            );
+        RenderTexture.ReleaseTemporary(tempRT);
 
-        // 盖章
-        Graphics.DrawTexture(drawRect, brushTexture, blendMaterial);
-        GL.PopMatrix();
-        RenderTexture.active = null;
+
 
     }
 }
